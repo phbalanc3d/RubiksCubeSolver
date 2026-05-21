@@ -24,5 +24,66 @@ class RubiksCube1dArray : public RubiksCube{
 
 
     public:
-    char cube[54];  
+    char cube[54]; 
+     RubiksCube1dArray() {
+        for (int i = 0; i < 6; i++) {
+            for (int j = 0; j < 3; j++) {
+                for (int k = 0; k < 3; k++) {
+                    cube[i * 9 + j * 3 + k] = getColorChar(Color(i));
+                }
+            }
+        }
+    }
+    Color getColor(Face face, unsigned row, unsigned col) const override {
+        char color = cube[getIndex((int)face, (int)row, (int)col)];
+        switch (color) {
+            case 'B':
+                return Color::BLUE;
+            case 'R':
+                return Color::RED ;
+            case 'G':
+                return Color::GREEN;
+            case 'O':
+                return Color::ORANGE;
+            case 'Y':
+                return Color::YELLOW;
+            default:
+                return Color::WHITE;
+        }
+    }
+    bool isSolved() const override {
+        for (int i = 0; i < 6; i++) {
+            for (int j = 0; j < 3; j++) {
+                for (int k = 0; k < 3; k++) {
+                    if (this->cube[getIndex(i, j, k)] == getColorChar(Color(i))) continue;
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+     RubiksCube &u() override {
+        this->rotateFace(0);
+
+        char temp_arr[3] = {};
+        for (int i = 0; i < 3; i++) temp_arr[i] = cube[getIndex(4, 0, 2 - i)];
+        for (int i = 0; i < 3; i++) cube[getIndex(4, 0, 2 - i)] = cube[getIndex(1, 0, 2 - i)];
+        for (int i = 0; i < 3; i++) cube[getIndex(1, 0, 2 - i)] = cube[getIndex(2, 0, 2 - i)];
+        for (int i = 0; i < 3; i++) cube[getIndex(2, 0, 2 - i)] = cube[getIndex(3, 0, 2 - i)];
+        for (int i = 0; i < 3; i++) cube[getIndex(3, 0, 2 - i)] = temp_arr[i];
+
+        return *this;
+    }
+     RubiksCube &uPrime() override {
+        this->u();
+        this->u();
+        this->u();
+
+        return *this;
+    }
+     RubiksCube &u2() override {
+        this->u();
+        this->u();
+        return *this;
+    }
 };
