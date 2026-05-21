@@ -3,8 +3,78 @@
 #include "cube.h"
 
 class RubiksCube3dArray : public RubiksCube {
+    private:
+
+    void rotateFace(int face){
+
+    // transpose
+    for(int i=0;i<3;i++){
+
+        for(int j=i+1;j<3;j++){
+
+            swap(
+                cube[face][i][j],
+                cube[face][j][i]
+            );
+        }
+    }
+    // reverse rows
+    for(int i=0;i<3;i++){
+
+        reverse(cube[face][i],cube[face][i] + 3);
+    }
+}
 
 public:
 
     char cube[6][3][3];
+    RubiksCube3dArray() {
+        for (int i = 0; i < 6; i++) {
+            for (int j = 0; j < 3; j++) {
+                for (int k = 0; k < 3; k++)
+                    cube[i][j][k] = getColorChar(Color(i));
+            }
+        }
+    }
+    Color getColor(Face face, unsigned row, unsigned col) const override {
+        char color = cube[int(face)][row][col];
+        switch (color) {
+            case 'B':
+                return Color::BLUE;
+            case 'R':
+                return Color::RED;
+            case 'G':
+                return Color::GREEN;
+            case 'O':
+                return Color::ORANGE;
+            case 'Y':
+                return Color::YELLOW;
+            default:
+                return Color::WHITE;
+        }
+    }
+    bool isSolved() const override {
+        for (int i = 0; i < 6; i++) {
+            for (int j = 0; j < 3; j++) {
+                for (int k = 0; k < 3; k++) {
+                    if (this->cube[i][j][k] == getColorChar(Color(i))) continue;
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+    RubiksCube &u() override {
+        this->rotateFace(0);
+
+        char temp_arr[3] = {};
+        for (int i = 0; i < 3; i++) temp_arr[i] = cube[4][0][2 - i];
+        for (int i = 0; i < 3; i++) cube[4][0][2 - i] = cube[1][0][2 - i];
+        for (int i = 0; i < 3; i++) cube[1][0][2 - i] = cube[2][0][2 - i];
+        for (int i = 0; i < 3; i++) cube[2][0][2 - i] = cube[3][0][2 - i];
+        for (int i = 0; i < 3; i++) cube[3][0][2 - i] = temp_arr[i];
+
+        return *this;
+    }
+
 };
