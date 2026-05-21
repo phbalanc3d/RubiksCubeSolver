@@ -76,5 +76,12 @@ public:
 
         return *this;
     }
+    RubiksCube &uPrime() override {
+        this->u();
+        this->u();
+        this->u();
+
+        return *this;
+    }
 
 };
