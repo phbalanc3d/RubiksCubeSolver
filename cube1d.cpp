@@ -86,4 +86,31 @@ class RubiksCube1dArray : public RubiksCube{
         this->u();
         return *this;
     }
+
+    RubiksCube &l() override {
+        this->rotateFace(1);
+
+        char temp_arr[3] = {};
+        for (int i = 0; i < 3; i++) temp_arr[i] = cube[getIndex(0, i, 0)];
+        for (int i = 0; i < 3; i++) cube[getIndex(0, i, 0)] = cube[getIndex(4, 2 - i, 2)];
+        for (int i = 0; i < 3; i++) cube[getIndex(4, 2 - i, 2)] = cube[getIndex(5, i, 0)];
+        for (int i = 0; i < 3; i++) cube[getIndex(5, i, 0)] = cube[getIndex(2, i, 0)];
+        for (int i = 0; i < 3; i++) cube[getIndex(2, i, 0)] = temp_arr[i];
+
+        return *this;
+    }
+    
+     RubiksCube &lPrime() override {
+        this->l();
+        this->l();
+        this->l();
+
+        return *this;
+    }
+     RubiksCube &l2() override {
+        this->l();
+        this->l();
+
+        return *this;
+     }
 };
