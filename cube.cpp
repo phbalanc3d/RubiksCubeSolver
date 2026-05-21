@@ -138,3 +138,63 @@ RubiksCube& RubiksCube::applyMove(Move move){
     }
     throw std::invalid_argument("Invalid move");
 }
+RubiksCube& RubiksCube::invert(Move move){
+
+    switch(move){
+
+        case Move::L:
+            return this->lPrime();
+
+        case Move::LPrime:
+            return this->l();
+
+        case Move::L2:
+            return this->l2();
+
+        case Move::R:
+            return this->rPrime();
+
+        case Move::RPrime:
+            return this->r();
+
+        case Move::R2:
+            return this->r2();
+
+        case Move::U:
+            return this->uPrime();
+
+        case Move::UPrime:
+            return this->u();
+
+        case Move::U2:
+            return this->u2();
+
+        case Move::D:
+            return this->dPrime();
+
+        case Move::DPrime:
+            return this->d();
+
+        case Move::D2:
+            return this->d2();
+
+        case Move::F:
+            return this->fPrime();
+
+        case Move::FPrime:
+            return this->f();
+
+        case Move::F2:
+            return this->f2();
+
+        case Move::B:
+            return this->bPrime();
+
+        case Move::BPrime:
+            return this->b();
+
+        case Move::B2:
+            return this->b2();
+    }
+    throw std::invalid_argument("Invalid move");
+}
