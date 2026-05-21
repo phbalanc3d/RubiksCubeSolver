@@ -5,11 +5,11 @@ using namespace std;
 class RubiksCube{
 public:
     enum class Face{
-        FRONT,
-        BACK,
-        LEFT,
-        RIGHT,
         UP,
+        LEFT,
+        FRONT,
+        RIGHT,
+        BACK,
         DOWN
     };
     enum class Color{
