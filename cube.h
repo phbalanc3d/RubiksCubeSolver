@@ -14,11 +14,11 @@ public:
     };
     enum class Color{
         WHITE,
-        YELLOW,
+        GREEN,
         RED,
-        ORANGE,
         BLUE,
-        GREEN
+        ORANGE,
+        YELLOW
     };
     enum class Move{
         L,LPrime, L2,
