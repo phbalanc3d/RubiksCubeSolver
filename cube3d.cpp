@@ -114,5 +114,31 @@ public:
 
         return *this;
     }
+    RubiksCube &f() override {
+        this->rotateFace(2);
+
+        char temp_arr[3] = {};
+        for (int i = 0; i < 3; i++) temp_arr[i] = cube[0][2][i];
+        for (int i = 0; i < 3; i++) cube[0][2][i] = cube[1][2 - i][2];
+        for (int i = 0; i < 3; i++) cube[1][2 - i][2] = cube[5][0][2 - i];
+        for (int i = 0; i < 3; i++) cube[5][0][2 - i] = cube[3][i][0];
+        for (int i = 0; i < 3; i++) cube[3][i][0] = temp_arr[i];
+
+        return *this;
+    }
+    RubiksCube &fPrime() override {
+        this->f();
+        this->f();
+        this->f();
+
+        return *this;
+    }
+    RubiksCube &f2() override {
+        this->f();
+        this->f();
+
+        return *this;
+    }
+
 
 };
