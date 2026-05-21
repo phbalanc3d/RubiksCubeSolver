@@ -198,3 +198,23 @@ RubiksCube& RubiksCube::invert(Move move){
     }
     throw std::invalid_argument("Invalid move");
 }
+
+vector<RubiksCube::Move>
+RubiksCube::randomShuffle(unsigned int times){
+
+    vector<Move> movesPerformed;
+
+    for(unsigned int i = 0; i < times; i++){
+
+        unsigned int randomMove = rand() % 18;
+
+        Move currentMove =
+            static_cast<Move>(randomMove);
+
+        movesPerformed.push_back(currentMove);
+
+        this->applyMove(currentMove);
+    }
+
+    return movesPerformed;
+}
