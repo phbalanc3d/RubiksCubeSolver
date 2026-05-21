@@ -99,7 +99,7 @@ class RubiksCube1dArray : public RubiksCube{
 
         return *this;
     }
-    
+
      RubiksCube &lPrime() override {
         this->l();
         this->l();
@@ -112,5 +112,32 @@ class RubiksCube1dArray : public RubiksCube{
         this->l();
 
         return *this;
-     }
+    }
+
+    RubiksCube &f() override {
+        this->rotateFace(2);
+
+        char temp_arr[3] = {};
+        for (int i = 0; i < 3; i++) temp_arr[i] = cube[getIndex(0, 2, i)];
+        for (int i = 0; i < 3; i++) cube[getIndex(0, 2, i)] = cube[getIndex(1, 2 - i, 2)];
+        for (int i = 0; i < 3; i++) cube[getIndex(1, 2 - i, 2)] = cube[getIndex(5, 0, 2 - i)];
+        for (int i = 0; i < 3; i++) cube[getIndex(5, 0, 2 - i)] = cube[getIndex(3, i, 0)];
+        for (int i = 0; i < 3; i++) cube[getIndex(3, i, 0)] = temp_arr[i];
+
+        return *this;
+    }
+    RubiksCube &fPrime() override {
+        this->f();
+        this->f();
+        this->f();
+
+        return *this;
+    }
+
+    RubiksCube &f2() override {
+        this->f();
+        this->f();
+
+        return *this;
+    }
 };
