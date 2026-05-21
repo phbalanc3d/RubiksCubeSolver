@@ -218,3 +218,99 @@ RubiksCube::randomShuffle(unsigned int times){
 
     return movesPerformed;
 }
+
+void RubiksCube::print() const{
+
+    cout<<"Rubiks Cube:\n\n";
+
+    // up this way
+
+    for(int row = 0; row < 3; row++){
+
+        for(int i = 0; i < 7; i++){
+            cout<<" ";
+        }
+
+        for(int col = 0; col < 3; col++){
+
+            cout<<getColorChar(
+                getColor(Face::UP,row,col)
+            )<<" ";
+        }
+
+        cout<<endl;
+    }
+
+    cout<<endl;
+
+    // left front right back
+
+    for(int row = 0; row < 3; row++){
+
+        // left
+
+        for(int col = 0; col < 3; col++){
+
+            cout<<getColorChar(
+                getColor(Face::LEFT,row,col)
+            )<<" ";
+        }
+
+        cout<<" ";
+
+        // front
+
+        for(int col = 0; col < 3; col++){
+
+            cout<<getColorChar(
+                getColor(Face::FRONT,row,col)
+            )<<" ";
+        }
+
+        cout<<" ";
+
+        // right
+
+        for(int col = 0; col < 3; col++){
+
+            cout<<getColorChar(
+                getColor(Face::RIGHT,row,col)
+            )<<" ";
+        }
+
+        cout<<" ";
+
+        // back
+
+        for(int col = 0; col < 3; col++){
+
+            cout<<getColorChar(
+                getColor(Face::BACK,row,col)
+            )<<" ";
+        }
+
+        cout<<endl;
+    }
+
+    cout<<endl;
+
+    // down this way
+
+    for(int row = 0; row < 3; row++){
+
+        for(int i = 0; i < 7; i++){
+            cout<<" ";
+        }
+
+        for(int col = 0; col < 3; col++){
+
+            cout<<getColorChar(
+                getColor(Face::DOWN,row,col)
+            )<<" ";
+        }
+
+        cout<<endl;
+    }
+
+    cout<<endl;
+}
