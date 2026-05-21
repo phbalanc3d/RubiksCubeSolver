@@ -218,4 +218,18 @@ class RubiksCube1dArray : public RubiksCube{
 
         return *this;
     }
+    // thiss here is the member fun overloading
+    bool operator==(const RubiksCube1dArray &r1) const {
+        for (int i = 0; i < 54; i++) {
+            if (cube[i] != r1.cube[i]) return false;
+        }
+        return true;
+    }
+
+    RubiksCube1dArray &operator=(const RubiksCube1dArray &r1) {
+        for (int i = 0; i < 54; i++) {
+            cube[i] = r1.cube[i];
+        }
+        return *this;
+    }
 };
