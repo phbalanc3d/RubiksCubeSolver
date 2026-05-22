@@ -1,7 +1,7 @@
 #pragma once
 #include<bits/stdc++.h>
 #include "../models/cube.h"
-#include "DFSSolver.h"
+#include "dfssolver.h"
 
 template<typename T>
 class IDDFSSolver {
