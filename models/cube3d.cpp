@@ -256,6 +256,7 @@ RubiksCube3dArray& operator=(const RubiksCube3dArray &r1){
     return *this;
 }
 };
+// custom hash fun
 struct Hash3d {
     size_t operator()(const RubiksCube3dArray &r1) const {
         string str = "";
