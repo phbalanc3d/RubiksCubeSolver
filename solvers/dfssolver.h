@@ -4,7 +4,7 @@
 #include "../models/cube.h"
 
 using namespace std;
-template<typename T, typename H>
+template<typename T>
 class DFSSolver {
     private:
         vector<RubiksCube::MOVE> path;
