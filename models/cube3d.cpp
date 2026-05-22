@@ -216,6 +216,9 @@ public:
 
         return *this;
     }
+
+    // thiss one implemented cuz there we have can have collisions in the hash func(same hash id) then for finding the object we need thiss
+
     bool operator==(const RubiksCube3dArray &r1) const{
 
     for(int i=0;i<6;i++){
@@ -234,6 +237,7 @@ public:
 
     return true;
 }
+// again this = for the for assigning, else we end up making shallow copies man
 RubiksCube3dArray& operator=(const RubiksCube3dArray &r1){
 
     for(int i=0;i<6;i++){
@@ -251,4 +255,18 @@ RubiksCube3dArray& operator=(const RubiksCube3dArray &r1){
 
     return *this;
 }
+};
+struct Hash3d {
+    size_t operator()(const RubiksCube3dArray &r1) const {
+        string str = "";
+        for (int i = 0; i < 6; i++) {
+            for (int j = 0; j < 3; j++) {
+                for (int k = 0; k < 3; k++) {
+                    str += r1.cube[i][j][k];
+                }
+            }
+        }
+        return hash<string>()(str);
+    }
+
 };
