@@ -20,6 +20,7 @@ class IDDFSSolver {
 
     vector<RubiksCube::MOVE> solve() {
         for (int i = 1; i <= maxidepth; i++) {
+            // making the obj of dfs class then applying the dfs solver to it then checking if the cube is solved or not
             DFSSolver<T> dfsSolver(rubiksCube, i);
             moves = dfsSolver.solve();
             if (dfsSolver.rubiksCube.isSolved()) {
