@@ -8,7 +8,7 @@ class IDDFSSolver {
 
     private:
     int maxidepth;
-    vector<RubiksCube::MOVE> moves;
+    vector<RubiksCube::Move> moves;
 
     public:
     T rubiksCube;
@@ -18,7 +18,7 @@ class IDDFSSolver {
         maxidepth = _max_search_depth;
     }
 
-    vector<RubiksCube::MOVE> solve() {
+    vector<RubiksCube::Move> solve() {
         for (int i = 1; i <= maxidepth; i++) {
             // making the obj of dfs class then applying the dfs solver to it then checking if the cube is solved or not
             DFSSolver<T> dfsSolver(rubiksCube, i);
