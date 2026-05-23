@@ -19,7 +19,7 @@ class DFSSolver {
 
         for (int i = 0; i < 18; i++) {
 
-            rubiksCube.move(RubiksCube::Move(i));
+            rubiksCube.applyMove(RubiksCube::Move(i));
 
             path.push_back(RubiksCube::Move(i));
 
