@@ -40,7 +40,7 @@ public:
 
             typename T::Move move = static_cast<typename T::Move>(i);
             // Apply move
-            rubiksCube.applymove(move);
+            rubiksCube.applyMove(move);
             // Store move
             moves.push_back(move);
             // Recursive DFS
