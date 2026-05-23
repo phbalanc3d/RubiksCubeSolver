@@ -9,9 +9,9 @@
 template<typename T, typename H>
 class BFSSolver {
     private:
-        vector<RubiksCube::MOVE> moves;
+        vector<RubiksCube::Move> moves;
         unordered_map<T, bool, H> visited;
-        unordered_map<T, RubiksCube::MOVE, H> move_done;
+        unordered_map<T, RubiksCube::Move, H> move_done;
 
 
         // bfs algo returns a solved cube
@@ -28,7 +28,7 @@ class BFSSolver {
                 return node;
             }
             for (int i = 0; i < 18; i++) {
-                auto curr_move = RubiksCube::MOVE(i);
+                auto curr_move = RubiksCube::Move(i);
                 node.move(curr_move);
                 if (!visited[node]) {
                     visited[node] = true;
@@ -48,12 +48,12 @@ class BFSSolver {
     }
 
 //    Performs BFS and returns the vector of moves done to solve the cube
-    vector<RubiksCube::MOVE> solve() {
+    vector<RubiksCube::Move> solve() {
         T solved_cube = bfs();
         assert(solved_cube.isSolved());
         T curr_cube = solved_cube;
         while (!(curr_cube == rubiksCube)) {
-            RubiksCube::MOVE curr_move = move_done[curr_cube];
+            RubiksCube::Move curr_move = move_done[curr_cube];
             moves.push_back(curr_move);
             curr_cube.invert(curr_move);
         }
