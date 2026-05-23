@@ -7,7 +7,7 @@ using namespace std;
 template<typename T>
 class DFSSolver {
     private:
-        vector<RubiksCube::MOVE> path;
+        vector<RubiksCube::Move> path;
         int maxidepth;
 
 
@@ -19,15 +19,15 @@ class DFSSolver {
 
         for (int i = 0; i < 18; i++) {
 
-            rubiksCube.move(RubiksCube::MOVE(i));gi
+            rubiksCube.move(RubiksCube::Move(i));
 
-            path.push_back(RubiksCube::MOVE(i));
+            path.push_back(RubiksCube::Move(i));
 
             if (dfs(dep + 1)) return true;
             //backtrack
             path.pop_back();
 
-            rubiksCube.invert(RubiksCube::MOVE(i));
+            rubiksCube.invert(RubiksCube::Move(i));
         }
         return false;
     }
@@ -38,7 +38,7 @@ class DFSSolver {
         rubiksCube = _rubiksCube;
         maxidepth = _max_search_depth;
     }
-    vector<RubiksCube::MOVE> solve() {
+    vector<RubiksCube::Move> solve() {
         dfs(1);
         return path;
     }
