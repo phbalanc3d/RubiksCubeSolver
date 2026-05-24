@@ -16,6 +16,7 @@ class PatternDatabase{
     // this forces to set the object of this class with a size
     PatternDatabase(const size_t size);
 
+
     PatternDatabase(const size_t size,const uint8_t val);
 
     virtual size_t getSize() const;
@@ -25,7 +26,7 @@ class PatternDatabase{
     virtual bool isFull() const;
 
     virtual void toFile(const string &filePath) const;
-
+//file to ram
     virtual bool fromFile(const string &filePath);
 
     virtual vector<uint8_t> inflate() const;
