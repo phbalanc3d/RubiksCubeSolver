@@ -314,3 +314,66 @@ void RubiksCube::print() const{
 
     cout<<endl;
 }
+
+string RubiksCube::getCornerColorString(uint8_t ind) const {
+    string str = "";
+
+    switch (ind) {
+//        UFR
+        case 0:
+            str += getColorChar(getColor(Face::UP, 2, 2));
+            str += getColorChar(getColor(Face::FRONT, 0, 2));
+            str += getColorChar(getColor(Face::RIGHT, 0, 0));
+            break;
+
+//            UFL
+        case 1:
+            str += getColorChar(getColor(Face::UP, 2, 0));
+            str += getColorChar(getColor(Face::FRONT, 0, 0));
+            str += getColorChar(getColor(Face::LEFT, 0, 2));
+            break;
+
+//            UBL
+        case 2:
+            str += getColorChar(getColor(Face::UP, 0, 0));
+            str += getColorChar(getColor(Face::BACK, 0, 2));
+            str += getColorChar(getColor(Face::LEFT, 0, 0));
+            break;
+
+//            UBR
+        case 3:
+            str += getColorChar(getColor(Face::UP, 0, 2));
+            str += getColorChar(getColor(Face::BACK, 0, 0));
+            str += getColorChar(getColor(Face::RIGHT, 0, 2));
+            break;
+
+//            DFR
+        case 4:
+            str += getColorChar(getColor(Face::DOWN, 0, 2));
+            str += getColorChar(getColor(Face::FRONT, 2, 2));
+            str += getColorChar(getColor(Face::RIGHT, 2, 0));
+            break;
+
+//            DFL
+        case 5:
+            str += getColorChar(getColor(Face::DOWN, 0, 0));
+            str += getColorChar(getColor(Face::FRONT, 2, 0));
+            str += getColorChar(getColor(Face::LEFT, 2, 2));
+            break;
+
+//            DBR
+        case 6:
+            str += getColorChar(getColor(Face::DOWN, 2, 2));
+            str += getColorChar(getColor(Face::BACK, 2, 0));
+            str += getColorChar(getColor(Face::RIGHT, 2, 2));
+            break;
+
+//            DBL
+        case 7:
+            str += getColorChar(getColor(Face::DOWN, 2, 0));
+            str += getColorChar(getColor(Face::BACK, 2, 2));
+            str += getColorChar(getColor(Face::LEFT, 2, 0));
+            break;
+    }
+    return str;
+}
