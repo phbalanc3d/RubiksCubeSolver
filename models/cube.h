@@ -28,6 +28,9 @@ public:
         F,FPrime, F2,
         B,BPrime, B2        
     };
+
+    virtual void setColor(Face face, int row, int col, Color color) = 0;
+
     virtual Color getColor(Face face,unsigned row,unsigned col) const=0;
     static char getColorChar(Color color);
     virtual bool isSolved() const=0;
