@@ -36,6 +36,10 @@ public:
             }
         }
     }
+
+    void setColor(Face face, int row, int col, Color color) override {
+        cube[int(face)][row][col] = getColorChar(color);
+    }
     Color getColor(Face face, unsigned row, unsigned col) const override {
         char color = cube[int(face)][row][col];
         switch (color) {

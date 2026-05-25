@@ -88,6 +88,16 @@ public:
         }
     }
 
+    void setColor(Face face, int row, int col, Color color) override {
+        int idx = arr[row][col];
+        if (idx == 8) return;
+
+        bitboard[(int)face] &= ~(one_8 << (8 * idx));
+
+        uint64_t newColor = (1ULL << (int)color);
+        bitboard[(int)face] |= (newColor << (8 * idx));
+    }
+
     Color getColor(Face face, unsigned row, unsigned col) const override {
         int idx = arr[row][col];
         if (idx == 8) return (Color)((int) face);

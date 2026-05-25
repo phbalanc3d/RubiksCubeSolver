@@ -34,6 +34,10 @@ class RubiksCube1dArray : public RubiksCube{
             }
         }
     }
+
+    void setColor(Face face, int row, int col, Color color) override {
+        cube[getIndex((int)face, (int)row, (int)col)] = getColorChar(color);
+    }
     Color getColor(Face face, unsigned row, unsigned col) const override {
         char color = cube[getIndex((int)face, (int)row, (int)col)];
         switch (color) {
