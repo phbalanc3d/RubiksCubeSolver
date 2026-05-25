@@ -10,10 +10,84 @@ private:
     CornerPatternDatabase cornerDB;
     string fileName;
 public:
-    CornerDBMaker(string _fileName);
-    CornerDBMaker(string _fileName, uint8_t init_val);
+    CornerDB(string _fileName);
+    CornerDB(string _fileName, uint8_t init_val);
 
-    bool bfsAndStore();
+    bool bfsAndStore(uint8_t maxDepth);
 
 };
+
+//template implementations inside the .h file because of linker error due to template class and its implementation in different files
+template<typename T>
+CornerDB<T>::CornerDB(string _fileName)
+        :
+        fileName(_fileName){}
+
+
+template<typename T>
+CornerDB<T>::CornerDB(
+        string _fileName,
+        uint8_t init_val)
+        :
+        fileName(_fileName),
+        cornerDB(init_val){}
+
+
+template<typename T>
+bool CornerDB<T>::bfsAndStore(
+        uint8_t maxDepth) {
+    // solved cube
+    T cube;
+    queue<T> q;
+    q.push(cube);
+    // solved state index
+    uint32_t index =
+            cornerDB.getDatabaseIndex(cube);
+    // depth of solved state = 0
+    cornerDB.setNumMoves(index, 0);
+while(!q.empty()) {
+        T curr = q.front();
+        q.pop();
+        uint8_t currDepth =
+                cornerDB.getNumMoves(
+                        cornerDB.getDatabaseIndex(curr)
+                );
+        // stop deeper expansion
+        if(currDepth == maxDepth)
+            continue;
+for(int move = 0;
+            move < 18;
+            move++) {
+            T child = curr;
+            child.move(
+                    RubiksCube::MOVE(move)
+            );
+            uint32_t childIndex =
+                    cornerDB.getDatabaseIndex(child);
+ if(cornerDB.getNumMoves(childIndex)
+               == 255) {
+                cornerDB.setNumMoves(
+                        childIndex,
+                        currDepth + 1
+                );
+                q.push(child);
+            }
+        }
+    }
+    for(uint32_t i = 0;
+        i < cornerDB.getSize();
+        i++) {
+
+        if(cornerDB.getNumMoves(i)
+           == 255) {
+
+            cornerDB.setNumMoves(
+                    i,
+                    maxDepth + 1
+            );
+        }
+    }
+
+return cornerDB.toFile(fileName);
+}
 
