@@ -1,5 +1,9 @@
+#pragma once
+
 #include<bits/stdc++.h>
+
 #include "../models/cube.h"
+#include "../patternDatabase/CornerDB.h"
 using namespace std;
 
 template<typename T>
@@ -11,16 +15,18 @@ private:
     int bound;
     // Next bound
     int next_bound;
+    CornerPatternDatabase cornerDB;
 
 public:
 
     T rubiksCube;
-    IDAstarSolver(T cube){
+    IDAstarSolver(T cube,string fileName){
         rubiksCube = cube;
+        cornerDB = CornerPatternDatabase(fileName);
     }
     // dummy heuristic 
     int heuristic(T cube){
-        return 0;
+        return cornerDB.getNumMoves(cornerDB.getDatabaseIndex(cube));
     }
     //dfs
 
@@ -28,6 +34,7 @@ public:
         
         int h = heuristic(rubiksCube);
         int f = g + h;
+        //pruning
         if(f > bound){
             next_bound = min(next_bound, f);
             return false;
@@ -35,6 +42,7 @@ public:
         // Goal check
         if(rubiksCube.isSolved())
             return true;
+         //bfs model
         // Try all 18 moves
         for(int i=0;i<18;i++){
 
