@@ -53,9 +53,8 @@ while(!q.empty()) {
             continue;
 for(int move = 0;move < 18;move++) {
             T child = curr;
-
+// this creates the child like all the neighbours of the current cube after applying one move
             child.applyMove(RubiksCube::Move(move));
-
             uint32_t childIndex =cornerDB.getDatabaseIndex(child);
 //if unvisited then
  if(cornerDB.getNumMoves(childIndex)== 255) {
