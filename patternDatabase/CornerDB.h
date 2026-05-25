@@ -36,55 +36,37 @@ CornerDB<T>::CornerDB(
 template<typename T>
 bool CornerDB<T>::bfsAndStore(
         uint8_t maxDepth) {
-    // solved cube
+    // default constructor for solved cube
     T cube;
     queue<T> q;
     q.push(cube);
     // solved state index
-    uint32_t index =
-            cornerDB.getDatabaseIndex(cube);
-    // depth of solved state = 0
+    uint32_t index = cornerDB.getDatabaseIndex(cube);
+    // depth of solved state intialy is 0
     cornerDB.setNumMoves(index, 0);
 while(!q.empty()) {
         T curr = q.front();
         q.pop();
-        uint8_t currDepth =
-                cornerDB.getNumMoves(
-                        cornerDB.getDatabaseIndex(curr)
-                );
-        // stop deeper expansion
+        uint8_t currDepth = cornerDB.getNumMoves(cornerDB.getDatabaseIndex(curr));
+        // stop deeper expansion cuz its childern wil have depth more than maxDepth
         if(currDepth == maxDepth)
             continue;
-for(int move = 0;
-            move < 18;
-            move++) {
+for(int move = 0;move < 18;move++) {
             T child = curr;
-            child.move(
-                    RubiksCube::MOVE(move)
-            );
-            uint32_t childIndex =
-                    cornerDB.getDatabaseIndex(child);
- if(cornerDB.getNumMoves(childIndex)
-               == 255) {
-                cornerDB.setNumMoves(
-                        childIndex,
-                        currDepth + 1
-                );
+
+            child.applyMove(RubiksCube::Move(move));
+
+            uint32_t childIndex =cornerDB.getDatabaseIndex(child);
+//if unvisited then
+ if(cornerDB.getNumMoves(childIndex)== 255) {
+                cornerDB.setNumMoves(childIndex,currDepth + 1);
                 q.push(child);
             }
         }
     }
-    for(uint32_t i = 0;
-        i < cornerDB.getSize();
-        i++) {
-
-        if(cornerDB.getNumMoves(i)
-           == 255) {
-
-            cornerDB.setNumMoves(
-                    i,
-                    maxDepth + 1
-            );
+    for(uint32_t i = 0;i < cornerDB.getSize();i++) {
+        if(cornerDB.getNumMoves(i)== 255) {
+            cornerDB.setNumMoves(i,maxDepth + 1);
         }
     }
 
