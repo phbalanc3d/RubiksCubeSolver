@@ -1,0 +1,25 @@
+# Build folders
+build/
+
+# Executables
+*.exe
+
+# Object files
+*.o
+*.obj
+
+# Debug files
+*.pdb
+*.ilk
+
+# VS Code settings
+.vscode/
+
+# CMake generated files
+CMakeFiles/
+CMakeCache.txt
+cmake_install.cmake
+Makefile
+
+# mac/linux
+*.out
