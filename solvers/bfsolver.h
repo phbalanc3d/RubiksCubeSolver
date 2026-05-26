@@ -1,6 +1,18 @@
 #pragma once
 
-#include<bits/stdc++.h>
+#include <iostream>
+   #include <vector>
+   #include <string>
+   #include <algorithm>
+   #include <map>
+   #include <unordered_map>
+   #include <queue>
+   #include <stack>
+   #include <cmath>
+   #include <cassert>
+   #include <climits>
+   #include <functional>
+   #include <numeric>
 #include "../models/cube.h"
 
 // Typename T: RubiksCube Representation used (3d, 1d, Bitboard)

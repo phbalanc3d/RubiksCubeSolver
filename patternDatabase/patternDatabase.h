@@ -2,7 +2,19 @@
 
 #include "../models/cube.h"
 #include "nibbleArray.h"
-#include "bits/stdc++.h"
+#include <iostream>
+   #include <vector>
+   #include <string>
+   #include <algorithm>
+   #include <map>
+   #include <unordered_map>
+   #include <queue>
+   #include <stack>
+   #include <cmath>
+   #include <cassert>
+   #include <climits>
+   #include <functional>
+   #include <numeric>
 using namespace std;
 
 class PatternDatabase{

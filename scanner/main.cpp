@@ -1,12 +1,45 @@
 #include <opencv2/opencv.hpp>
-
+#include <fstream>
+#include "../patternDatabase/CornerDB.h"
+#include "../models/cubeBitboard.cpp"
 #include <iostream>
 
+#include <iostream>
+   #include <vector>
+   #include <string>
+   #include <algorithm>
+   #include <map>
+   #include <unordered_map>
+   #include <queue>
+   #include <stack>
+   #include <cmath>
+   #include <cassert>
+   #include <climits>
+   #include <functional>
+   #include <numeric>
 using namespace std;
 using namespace cv;
 
 int main() {
+    string dbFile = "patternDatabase/db/cornerDB.bin";
 
+ifstream file(dbFile);
+
+if(file.good()) {
+
+    cout << "Corner DB already exists!" << endl;
+
+}
+else {
+
+    cout << "Generating Corner DB..." << endl;
+
+    CornerDB<RubiksCubeBitboard> cornerDB(dbFile);
+
+    cornerDB.bfsAndStore(8);
+
+    cout << "Corner DB generated and stored!" << endl;
+}
     VideoCapture cap(0);
 
     if (!cap.isOpened()) {
@@ -50,7 +83,19 @@ int main() {
 #include "solvers/idastarsolver.h"
 
 #include <ctime>
-#include <bits/stdc++.h>
+#include <iostream>
+#include <vector>
+#include <string>
+#include <algorithm>
+#include <map>
+#include <unordered_map>
+#include <queue>
+#include <stack>
+#include <cmath>
+#include <cassert>
+#include <climits>
+#include <functional>
+#include <numeric>
 using namespace std;
 
 

@@ -1,23 +1,22 @@
 cmake_minimum_required(VERSION 3.15)
-
 project(cube)
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED True)
 
-# OpenCV path
-set(OpenCV_DIR "C:/opencv/build")
+# OpenCV
+set(OPENCV_INCLUDE "C:/opencv/build/include")
+set(OPENCV_LIB "C:/opencv/build/x64/vc16/lib/opencv_world4100.lib")
 
-# Find OpenCV
-find_package(OpenCV REQUIRED)
-
-# Include OpenCV headers
-include_directories(${OpenCV_INCLUDE_DIRS})
-
-# Webcam scanner executable
 add_executable(scanner
     scanner/main.cpp
+    models/cube.cpp
+    patternDatabase/patternDatabase.cpp
+    patternDatabase/nibbleArray.cpp
+    patternDatabase/CornerPatternDatabase.cpp
+    patternDatabase/math.cpp
 )
 
-# Link OpenCV
-target_link_libraries(scanner ${OpenCV_LIBS})
+target_include_directories(scanner PRIVATE ${OPENCV_INCLUDE})
+
+target_link_libraries(scanner ${OPENCV_LIB})
