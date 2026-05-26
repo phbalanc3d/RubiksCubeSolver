@@ -52,6 +52,7 @@ bool CornerDB<T>::bfsAndStore(
     T cube;
     queue<T> q;
     q.push(cube);
+    cout << "BFS started" << endl;
     // solved state index
     uint32_t index = cornerDB.getDatabaseIndex(cube);
     // depth of solved state intialy is 0
@@ -80,8 +81,9 @@ for(int move = 0;move < 18;move++) {
             cornerDB.setNumMoves(i,maxDepth + 1);
         }
     }
-
+    cout << "Saving DB..." << endl;
 cornerDB.toFile(fileName);
+cout << "DB saved!" << endl;
 return true;
 }
 
