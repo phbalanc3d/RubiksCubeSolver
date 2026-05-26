@@ -21,7 +21,7 @@ using namespace std;
 using namespace cv;
 
 int main() {
-    string dbFile = "patternDatabase/db/cornerDB.bin";
+    string dbFile = "../patternDatabase/db/cornerDB.bin";
 
 ifstream file(dbFile);
 
