@@ -1,16 +1,11 @@
 #include "CubeScanner.h"
+
 #include <iostream>
 #include <vector>
 #include <string>
 #include <algorithm>
 #include <map>
-#include <queue>
-#include <stack>
-#include <cmath>
-#include <cassert>
-#include <climits>
-#include <functional>
-#include <numeric>
+
 
 using namespace cv;
 using namespace std;
@@ -174,7 +169,11 @@ void CubeScanner::scanCube(RubiksCubeBitboard& cube) {
         6, vector<vector<RubiksCube::Color>>(
             3, vector<RubiksCube::Color>(3, RubiksCube::Color::WHITE)));
 
+        vector<string> faceNames = {"UP", "LEFT", "FRONT", "RIGHT", "BACK", "DOWN"};
+
     for (int face = 0; face < 6; face++) {
+         cout << "[Scanner] Scanning face " << (face+1) << "/6: "
+             << faceNames[face] << "\n";
         while (true) {
             auto grid = captureFace();
             cubeGrid[face] = grid;
@@ -186,6 +185,7 @@ void CubeScanner::scanCube(RubiksCubeBitboard& cube) {
             imshow("Cube Net", cubeImg);
 
             int key = waitKey(0);
+            
             if (key == 'n' || key == 'N') {
                 for (int i = 0; i < 3; ++i)
                     for (int j = 0; j < 3; ++j)
@@ -195,9 +195,16 @@ void CubeScanner::scanCube(RubiksCubeBitboard& cube) {
                 destroyWindow("Scanned Face");
                 break;
             }
+            else if (key == 'r' || key == 'R') {
+                cout << "[Scanner] Rescanning face " << faceNames[face] << "...\n";
+            }
+            else {
+                cout << "[Scanner] Invalid key. Press [R] to rescan or [N] for next.\n";
+            }
         }
     }
 
     cap.release();
     destroyAllWindows();
+    cout << "[Scanner] All 6 faces scanned.\n";
 }
