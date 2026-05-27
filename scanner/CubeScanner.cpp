@@ -10,7 +10,7 @@
 using namespace cv;
 using namespace std;
 
-const map<RubiksCube::Color, Scalar> CubeScanner::colorMap = {
+inline const map<RubiksCube::Color, Scalar> CubeScanner::colorMap = {
     {RubiksCube::Color::WHITE,  Scalar(255, 255, 255)},
     {RubiksCube::Color::RED,    Scalar(0, 0, 255)},
     {RubiksCube::Color::ORANGE, Scalar(0, 165, 255)},
