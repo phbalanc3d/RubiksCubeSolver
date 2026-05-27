@@ -6,7 +6,7 @@ using namespace std;
 // get
     uint8_t NibbleArray::get(const size_t pos) const {
         size_t i = pos / 2;
-        assert(pos <= this->size);
+        assert(pos < this->size);
         uint8_t val = this->arr.at(i);
         // if odd then return the last 4 bits then
          if (pos % 2) {
