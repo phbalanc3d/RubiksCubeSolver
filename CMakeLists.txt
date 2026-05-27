@@ -12,12 +12,13 @@ add_executable(scanner
     scanner/main.cpp
     scanner/CubeScanner.cpp
     models/cube.cpp
+    models/cubeBitboard.cpp
     patternDatabase/patternDatabase.cpp
     patternDatabase/nibbleArray.cpp
     patternDatabase/CornerPatternDatabase.cpp
     patternDatabase/math.cpp
 )
 
-target_include_directories(scanner PRIVATE ${OPENCV_INCLUDE})
+target_include_directories(scanner PRIVATE ${OPENCV_INCLUDE} ${CMAKE_SOURCE_DIR})
 
 target_link_libraries(scanner ${OPENCV_LIB})
