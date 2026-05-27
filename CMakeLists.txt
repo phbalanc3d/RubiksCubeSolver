@@ -10,6 +10,7 @@ set(OPENCV_LIB "C:/opencv/build/x64/vc16/lib/opencv_world4100.lib")
 
 add_executable(scanner
     scanner/main.cpp
+    scanner/CubeScanner.cpp
     models/cube.cpp
     patternDatabase/patternDatabase.cpp
     patternDatabase/nibbleArray.cpp

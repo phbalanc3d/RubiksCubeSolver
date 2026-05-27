@@ -2,7 +2,6 @@
 #include <fstream>
 #include "../patternDatabase/CornerDB.h"
 #include "../models/cubeBitboard.cpp"
-#include <iostream>
 
 #include <iostream>
    #include <vector>
