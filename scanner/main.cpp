@@ -2,121 +2,87 @@
 #include <fstream>
 #include "../patternDatabase/CornerDB.h"
 #include "../models/cubeBitboard.cpp"
+#include "../scanner/CubeScanner.h"
+#include "../solvers/idastarsolver.h"
 
 #include <iostream>
-   #include <vector>
-   #include <string>
-   #include <algorithm>
-   #include <map>
-   #include <unordered_map>
-   #include <queue>
-   #include <stack>
-   #include <cmath>
-   #include <cassert>
-   #include <climits>
-   #include <functional>
-   #include <numeric>
+#include <chrono>
+
 using namespace std;
 using namespace cv;
 
 int main() {
-    string dbFile = "../patternDatabase/db/cornerDB.bin";
+    //step 1 pattern database generation
+string dbFile = "../patternDatabase/db/cornerDB.bin";
 
-ifstream file(dbFile);
+ifstream file(dbFile,ios::binary);
 
 if(file.good()) {
 
-    cout << "Corner DB already exists!" << endl;
+    cout << "Corner DB already exists" << endl;
 
 }
 else {
 
     cout << "Generating Corner DB..." << endl;
 
-    CornerDB<RubiksCubeBitboard> cornerDB(dbFile);
+    CornerDB<RubiksCubeBitboard> cornerDB(dbFile,0xFF);
 
     cornerDB.bfsAndStore(8);
 
-    cout << "Corner DB generated and stored!" << endl;
+    cout << "Corner DB generated and stored" << endl;
 }
-    VideoCapture cap(0);
+file.close();
+//step 2 scanning the cube
+RubiksCubeBitboard cube;
 
-    if (!cap.isOpened()) {
-        cerr << "Error opening webcam!" << endl;
+    try {
+        CubeScanner scanner(0, 60);
+        scanner.scanCube(cube);
+    } catch (exception& e) {
+        cerr << "[Scanner] Error: " << e.what() << "\n";
         return -1;
     }
 
-    cout << "Webcam opened successfully!" << endl;
+cout << "\n[Cube] Scanned state:\n";
+cube.print();
+//step 3 solving the cube using IDA* and cornerDB
+cout << "\n[Solver] Running IDA* with Corner Pattern Database...\n";
+    
+auto startTime = chrono::high_resolution_clock::now();
+IDAstarSolver<RubiksCubeBitboard> solver(cube, dbFile);
+vector<RubiksCube::Move> moves = solver.solve();
+auto endTime = chrono::high_resolution_clock::now();
+double elapsed = chrono::duration<double>(endTime - startTime).count();
 
-    Mat frame;
-
-    while (true) {
-
-        cap.read(frame);
-
-        if (frame.empty()) {
-            cout << "Empty frame!" << endl;
-            break;
-        }
-
-        imshow("Rubiks Cube Scanner", frame);
-
-        char c = (char)waitKey(1);
-
-        if (c == 'q')
-            break;
+//step4 output 
+if (moves.empty()) {
+        cout << "[Solver] No solution found. Re-scan the cube carefully.\n";
+        return 1;
     }
+cout << "\n╔══════════════════════════════════════╗\n";
+    cout << "║           SOLUTION FOUND             ║\n";
+    cout << "╠══════════════════════════════════════╣\n";
+    cout << "║ Moves  : " << moves.size() << "\n";
+    cout << "║ Time   : " << elapsed << " seconds\n";
+    cout << "║ Sequence:\n║  ";
+    for (int i = 0; i < (int)moves.size(); i++) {
+        cout << RubiksCube::getMove(moves[i]);
+        if (i != (int)moves.size() - 1) cout << " -> ";
+        if ((i + 1) % 8 == 0) cout << "\n║  ";
+    }
+    cout << "\n╚══════════════════════════════════════╝\n";
 
-    cap.release();
-    destroyAllWindows();
+    //step5 verify
+    for (auto m : moves)
+        cube.applyMove(m);
 
-    return 0;
+    cout << "\n[Verify] Cube solved: " << (cube.isSolved() ? "YES " : "NO") << "\n";
+
+    return 0; 
 }
 
 
 
 
 
-/*#include "models/cube1d.cpp"
-#include "solvers/iddfs.h"
-#include "solvers/idastarsolver.h"
-
-#include <ctime>
-#include <iostream>
-#include <vector>
-#include <string>
-#include <algorithm>
-#include <map>
-#include <unordered_map>
-#include <queue>
-#include <stack>
-#include <cmath>
-#include <cassert>
-#include <climits>
-#include <functional>
-#include <numeric>
-using namespace std;
-
-
-int main(){
-    srand(time(0));
-    RubiksCube1dArray cube1d;
-    cube1d.randomShuffle(4);
-    cube1d.print();
-
-    IDAstarSolver<RubiksCube1dArray> solver(cube1d);
-    vector<RubiksCube1dArray::Move> moves = solver.solve();
-    cout<<"Solution:\n";
-
-    for(auto move : moves){
-        cout<<cube1d.getMove(move)<<" ";
-    }
-    cout<<"\n";
-    for(auto move: moves){
-        cube1d.applyMove(move);
-    }
-
-    cout<<cube1d.isSolved()<<endl;
-    cube1d.print();
-    return 0;
-}*/
