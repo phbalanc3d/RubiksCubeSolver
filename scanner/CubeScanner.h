@@ -2,7 +2,7 @@
 
 #include <opencv2/opencv.hpp>
 #include "../models/cube.h"
-#include "../models/cubeBitboard.cpp"
+#include "../models/cubeBitboard.h"
 
 #include <vector>
 #include <map>

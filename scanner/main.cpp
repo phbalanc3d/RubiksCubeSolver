@@ -1,7 +1,7 @@
 #include <opencv2/opencv.hpp>
 #include <fstream>
 #include "../patternDatabase/CornerDB.h"
-#include "../models/cubeBitboard.cpp"
+#include "../models/cubeBitboard.h"
 #include "../scanner/CubeScanner.h"
 #include "../solvers/idastarsolver.h"
 
