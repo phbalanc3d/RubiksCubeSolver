@@ -1,7 +1,7 @@
 //
 // Created by Lakshya Mittal on 26-12-2021.
 //
-
+#include "cubeBitboard.h"   
 #include "cube.h"
 
 class RubiksCubeBitboard : public RubiksCube {
