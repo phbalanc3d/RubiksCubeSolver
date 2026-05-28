@@ -37,7 +37,7 @@ file.close();
 RubiksCubeBitboard cube;
 
     try {
-        CubeScanner scanner(0, 60);
+        CubeScanner scanner(1, 60);
         bool success = scanner.scanCube(cube);  // ← now returns bool
         if (!success) {
             cerr << "[Scanner] Failed to scan the cube." << "\n";

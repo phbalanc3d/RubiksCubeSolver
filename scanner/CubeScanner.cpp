@@ -34,21 +34,40 @@ RubiksCube::Color CubeScanner::classifyColor(const Vec3b& bgr) {
     Mat hsvPixel;
     cvtColor(bgrPixel, hsvPixel, COLOR_BGR2HSV);
     Vec3b hsv = hsvPixel.at<Vec3b>(0, 0);
-    int h = hsv[0];
 
-    if (
-        bgr[2] > 200 && bgr[1] > 200 && bgr[0] > 200 &&
-        abs(bgr[2] - bgr[1]) < 30 &&
-        abs(bgr[1] - bgr[0]) < 30 &&
-        abs(bgr[0] - bgr[2]) < 30
-    ) return RubiksCube::Color::WHITE;
+    int h = hsv[0];   // 0-180 in OpenCV
+    int s = hsv[1];   // 0-255
+    int v = hsv[2];   // 0-255
 
-    if (h >= 160 && h <= 190) return RubiksCube::Color::RED;
-    if (h >= 3   && h <= 19)  return RubiksCube::Color::ORANGE;
-    if (h >= 20  && h <= 30)  return RubiksCube::Color::YELLOW;
-    if (h >= 60  && h <= 90)  return RubiksCube::Color::GREEN;
-    if (h >= 100 && h <= 120) return RubiksCube::Color::BLUE;
+    // WHITE — high brightness, low saturation
+    if (v > 180 && s < 60)
+        return RubiksCube::Color::WHITE;
 
+    // low saturation non-white = probably white under bad lighting
+    if (s < 40)
+        return RubiksCube::Color::WHITE;
+
+    // YELLOW — wider range for low quality cams
+    if (h >= 20 && h <= 35)
+        return RubiksCube::Color::YELLOW;
+
+    // ORANGE
+    if (h >= 8 && h <= 19)
+        return RubiksCube::Color::ORANGE;
+
+    // RED — wraps around 0 and 180
+    if (h <= 7 || h >= 165)
+        return RubiksCube::Color::RED;
+
+    // GREEN
+    if (h >= 55 && h <= 95)
+        return RubiksCube::Color::GREEN;
+
+    // BLUE
+    if (h >= 96 && h <= 130)
+        return RubiksCube::Color::BLUE;
+
+    // fallback — guess based on hue
     return RubiksCube::Color::WHITE;
 }
 
