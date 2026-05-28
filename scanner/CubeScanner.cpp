@@ -299,7 +299,9 @@ bool CubeScanner::scanCube(RubiksCubeBitboard& cube) {
         for (auto& [color, count] : colorCount)
             cout << colorNames[(int)color] << ": " << count << endl;
         cout << "Please re-run and scan again carefully." << endl;
+         return false;
     } else {
         cout << "\n Cube scanned successfully!" << endl;
+        return true;
     }
 }
