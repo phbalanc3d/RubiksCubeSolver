@@ -1,27 +1,19 @@
 //
 // Created by Lakshya Mittal on 26-12-2021.
 //
-#include "cubeBitboard.h"   
-#include "cube.h"
 
-class RubiksCubeBitboard : public RubiksCube {
+#include "cubeBitboard.h"
+using Color = RubiksCube::Color;
+using Face  = RubiksCube::Face;
+using Move  = RubiksCube::Move;
 
-private:
-    uint64_t solved_side_config[6]{};
-
-    int arr[3][3] = {{0, 1, 2},
-                     {7, 8, 3},
-                     {6, 5, 4}};
-
-    uint64_t one_8 = (1 << 8) - 1, one_24 = (1 << 24) - 1;
-
-    void rotateFace(int ind) {
+    void RubiksCubeBitboard:: rotateFace(int ind) {
         uint64_t side = bitboard[ind];
         side = side >> (8 * 6);
         bitboard[ind] = (bitboard[ind] << 16) | (side);
     }
 
-    void rotateSide(int s1, int s1_1, int s1_2, int s1_3, int s2, int s2_1, int s2_2, int s2_3) {
+    void RubiksCubeBitboard::rotateSide(int s1, int s1_1, int s1_2, int s1_3, int s2, int s2_1, int s2_2, int s2_3) {
         uint64_t clr1 = (bitboard[s2] & (one_8 << (8 * s2_1))) >> (8 * s2_1);
         uint64_t clr2 = (bitboard[s2] & (one_8 << (8 * s2_2))) >> (8 * s2_2);
         uint64_t clr3 = (bitboard[s2] & (one_8 << (8 * s2_3))) >> (8 * s2_3);
@@ -32,14 +24,13 @@ private:
     }
 
 //    Helper to getCorners()
-    int get5bitCorner(string corner) {
+    int RubiksCubeBitboard::get5bitCorner(string corner) {
         int ret = 0;
         string actual_str;
         for (auto c: corner) {
             if (c != 'W' && c != 'Y') continue;
             actual_str.push_back(c);
-            if (c == 'Y') {
-                ret |= (1 << 2);
+            if (c == 'Y') {ret |= (1 << 2);
             }
         }
 
@@ -74,10 +65,7 @@ private:
 //        }
 //    }
 
-public:
-    uint64_t bitboard[6]{};
-
-    RubiksCubeBitboard() {
+    RubiksCubeBitboard::RubiksCubeBitboard() {
         for (int side = 0; side < 6; side++) {
             uint64_t clr = 1 << side;
             bitboard[side] = 0;
@@ -88,7 +76,7 @@ public:
         }
     }
 
-    void setColor(Face face, int row, int col, Color color) override {
+    void RubiksCubeBitboard::setColor(Face face, int row, int col, Color color){
         int idx = arr[row][col];
         if (idx == 8) return;
 
@@ -98,7 +86,7 @@ public:
         bitboard[(int)face] |= (newColor << (8 * idx));
     }
 
-    Color getColor(Face face, unsigned row, unsigned col) const override {
+    Color RubiksCubeBitboard::getColor(Face face, unsigned row, unsigned col)const{
         int idx = arr[row][col];
         if (idx == 8) return (Color)((int) face);
 
@@ -113,14 +101,14 @@ public:
         return (Color)(bit_pos - 1);
     }
 
-    bool isSolved() const override {
+    bool RubiksCubeBitboard::isSolved() const{
         for (int i = 0; i < 6; i++) {
             if (solved_side_config[i] != bitboard[i]) return false;
         }
         return true;
     }
 
-    RubiksCube &u() override {
+    RubiksCube &RubiksCubeBitboard::u(){
         this->rotateFace(0);
         uint64_t temp = bitboard[2] & one_24;
         bitboard[2] = (bitboard[2] & ~one_24) | (bitboard[3] & one_24);
@@ -131,7 +119,7 @@ public:
         return *this;
     }
 
-    RubiksCube &uPrime() override {
+    RubiksCube &RubiksCubeBitboard::uPrime(){
         this->u();
         this->u();
         this->u();
@@ -139,14 +127,14 @@ public:
         return *this;
     };
 
-    RubiksCube &u2() override {
+    RubiksCube &RubiksCubeBitboard::u2(){
         this->u();
         this->u();
 
         return *this;
     };
 
-    RubiksCube &l() override {
+    RubiksCube &RubiksCubeBitboard::l(){
         this->rotateFace(1);
         uint64_t clr1 = (bitboard[2] & (one_8 << (8 * 0))) >> (8 * 0);
         uint64_t clr2 = (bitboard[2] & (one_8 << (8 * 6))) >> (8 * 6);
@@ -164,7 +152,7 @@ public:
 
     };
 
-    RubiksCube &lPrime() override {
+    RubiksCube &RubiksCubeBitboard::lPrime(){
         this->l();
         this->l();
         this->l();
@@ -172,14 +160,14 @@ public:
         return *this;
     };
 
-    RubiksCube &l2() override {
+    RubiksCube &RubiksCubeBitboard::l2(){
         this->l();
         this->l();
 
         return *this;
     };
 
-    RubiksCube &f() override {
+    RubiksCube &RubiksCubeBitboard::f() {
         this->rotateFace(2);
 
         uint64_t clr1 = (bitboard[0] & (one_8 << (8 * 4))) >> (8 * 4);
@@ -197,21 +185,21 @@ public:
         return *this;
     };
 
-    RubiksCube &fPrime() override {
+    RubiksCube &RubiksCubeBitboard::fPrime() {
         this->f();
         this->f();
         this->f();
         return *this;
     };
 
-    RubiksCube &f2() override {
+    RubiksCube &RubiksCubeBitboard::f2() {
         this->f();
         this->f();
 
         return *this;
     };
 
-    RubiksCube &r() override {
+    RubiksCube &RubiksCubeBitboard::r(){
         this->rotateFace(3);
         uint64_t clr1 = (bitboard[0] & (one_8 << (8 * 2))) >> (8 * 2);
         uint64_t clr2 = (bitboard[0] & (one_8 << (8 * 3))) >> (8 * 3);
@@ -228,7 +216,7 @@ public:
         return *this;
     };
 
-    RubiksCube &rPrime() override {
+    RubiksCube &RubiksCubeBitboard::rPrime() {
         this->r();
         this->r();
         this->r();
@@ -236,14 +224,14 @@ public:
         return *this;
     };
 
-    RubiksCube &r2() override {
+    RubiksCube &RubiksCubeBitboard::r2(){
         this->r();
         this->r();
 
         return *this;
     };
 
-    RubiksCube &b() override {
+    RubiksCube &RubiksCubeBitboard::b()  {
         this->rotateFace(4);
 
         uint64_t clr1 = (bitboard[0] & (one_8 << (8 * 0))) >> (8 * 0);
@@ -261,7 +249,7 @@ public:
         return *this;
     };
 
-    RubiksCube &bPrime() override {
+    RubiksCube &RubiksCubeBitboard::bPrime()  {
         this->b();
         this->b();
         this->b();
@@ -269,14 +257,14 @@ public:
         return *this;
     };
 
-    RubiksCube &b2() override {
+    RubiksCube &RubiksCubeBitboard::b2()  {
         this->b();
         this->b();
 
         return *this;
     };
 
-    RubiksCube &d() override {
+    RubiksCube &RubiksCubeBitboard::d()  {
         this->rotateFace(5);
 
         uint64_t clr1 = (bitboard[2] & (one_8 << (8 * 4))) >> (8 * 4);
@@ -294,7 +282,7 @@ public:
         return *this;
     };
 
-    RubiksCube &dPrime() override {
+    RubiksCube &RubiksCubeBitboard::dPrime()  {
         this->d();
         this->d();
         this->d();
@@ -302,29 +290,38 @@ public:
         return *this;
     };
 
-    RubiksCube &d2() override {
+    RubiksCube &RubiksCubeBitboard::d2()  {
         this->d();
         this->d();
 
         return *this;
     }
 
-    bool operator==(const RubiksCubeBitboard &r1) const {
-        for (int i = 0; i < 6; i++) {
-            if (bitboard[i] != r1.bitboard[i]) return false;
-        }
-        return true;
+   bool RubiksCubeBitboard::operator==(const RubiksCubeBitboard &r1) const {
+
+    for (int i = 0; i < 6; i++) {
+
+        if (bitboard[i] != r1.bitboard[i])
+            return false;
     }
 
-    RubiksCubeBitboard &operator=(const RubiksCubeBitboard &r1) {
-        for (int i = 0; i < 6; i++) {
-            bitboard[i] = r1.bitboard[i];
-        }
-        return *this;
+    return true;
+}
+
+
+RubiksCubeBitboard&
+RubiksCubeBitboard::operator=(const RubiksCubeBitboard &r1) {
+
+    for (int i = 0; i < 6; i++) {
+
+        bitboard[i] = r1.bitboard[i];
     }
 
+    return *this;
+}
 
-    uint64_t getCorners() {
+
+    uint64_t  RubiksCubeBitboard::getCorners() {
         uint64_t ret = 0;
         string top_front_right = "";
         top_front_right += getColorChar(getColor(Face::UP, 2, 2));
@@ -404,12 +401,13 @@ public:
         return ret;
     }
 
-};
 
-struct HashBitboard {
-    size_t operator()(const RubiksCubeBitboard &r1) const {
-        uint64_t final_hash = r1.bitboard[0];
-        for (int i = 1; i < 6; i++) final_hash ^= r1.bitboard[i];
-        return (size_t) final_hash;
-    }
-};
+
+size_t HashBitboard::operator()(const RubiksCubeBitboard &r1) const {
+    uint64_t final_hash = r1.bitboard[0];
+
+    for (int i = 1; i < 6; i++)
+        final_hash ^= r1.bitboard[i];
+
+    return (size_t) final_hash;
+}

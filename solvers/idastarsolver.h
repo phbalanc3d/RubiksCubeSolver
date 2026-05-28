@@ -25,10 +25,8 @@ public:
 
     T rubiksCube;
 
-    IDAstarSolver(T cube,string fileName){
-        rubiksCube = cube;
-        cornerDB = CornerDB<T>(fileName);
-    }
+    IDAstarSolver(T cube, string fileName)
+    : rubiksCube(cube), cornerDB(fileName) {}
     //heuristic 
     int heuristic(T& cube){
         return cornerDB.getNumMoves(cornerDB.getDatabaseIndex(cube));
