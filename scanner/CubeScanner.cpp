@@ -82,7 +82,7 @@ vector<vector<RubiksCube::Color>> CubeScanner::captureFace() {
         cols = frame.cols;
         int startX = (cols - 3 * boxSize) / 2;
         int startY = (rows - 3 * boxSize) / 2;
-
+//draw grid
         for (int i = 0; i <= 3; ++i) {
             line(frame,
                 Point(startX, startY + i * boxSize),
@@ -93,11 +93,35 @@ vector<vector<RubiksCube::Color>> CubeScanner::captureFace() {
                 Point(startX + i * boxSize, startY + 3 * boxSize),
                 Scalar(255, 255, 255), 2);
         }
+// Check if cube-like colors detected in grid
+        int coloredCells = 0;
+        for (int i = 0; i < 3; ++i) {
+            for (int j = 0; j < 3; ++j) {
+                int x = startX + j * boxSize + boxSize / 2;
+                int y = startY + i * boxSize + boxSize / 2;
+                Vec3b bgr = medianColor(frame, x, y);
+                RubiksCube::Color c = classifyColor(bgr);
+                // Draw small circle showing detected color
+                Scalar detectedColor = colorMap.at(c);
+                circle(frame, Point(x, y), 8, detectedColor, FILLED);
+                circle(frame, Point(x, y), 8, Scalar(0,0,0), 2);
+                coloredCells++;
+            }
+        }
+     // Instructions   
+        putText(frame, "SPACE = capture  |  Q = quit", Point(20, 30),
+            FONT_HERSHEY_SIMPLEX, 0.7, Scalar(0, 255, 255), 2, LINE_AA);
 
-        putText(frame, "Press SPACE to capture", Point(30, 30),
-            FONT_HERSHEY_SIMPLEX, 0.8, Scalar(255, 255, 255), 2, LINE_AA);
         imshow("Align Cube Face", frame);
-        if (waitKey(30) == 32) break;
+
+        int key = waitKey(30);
+
+        if (key == 32) break;      // SPACE to capture
+        if (key == 'q' || key == 'Q') {
+            destroyAllWindows();
+            cap.release();
+            exit(0);               // Q to quit entirely
+        }
     }
 
     cap >> frame;
@@ -172,8 +196,20 @@ void CubeScanner::scanCube(RubiksCubeBitboard& cube) {
         vector<string> faceNames = {"UP", "LEFT", "FRONT", "RIGHT", "BACK", "DOWN"};
 
     for (int face = 0; face < 6; face++) {
-         cout << "[Scanner] Scanning face " << (face+1) << "/6: "
-             << faceNames[face] << "\n";
+        Mat info(80, 400, CV_8UC3, Scalar(30, 30, 30));
+
+        putText(info,
+            "Scan face " + to_string(face+1) + "/6: " + faceNames[face],
+            Point(20, 30), FONT_HERSHEY_SIMPLEX,
+            0.8, Scalar(0, 255, 255), 2);
+
+         putText(info, "Q = quit anytime",
+            Point(20, 60), FONT_HERSHEY_SIMPLEX,
+            0.6, Scalar(100, 100, 255), 1);
+        
+        imshow("Instructions", info);
+        waitKey(1000); 
+
         while (true) {
             auto grid = captureFace();
             cubeGrid[face] = grid;
@@ -184,6 +220,13 @@ void CubeScanner::scanCube(RubiksCubeBitboard& cube) {
             imshow("Scanned Face", faceImg);
             imshow("Cube Net", cubeImg);
 
+            // Show options
+            Mat options(60, 400, CV_8UC3, Scalar(30, 30, 30));
+            putText(options, "N = next face  |  R = rescan  |  Q = quit",
+                Point(10, 35), FONT_HERSHEY_SIMPLEX,
+                0.6, Scalar(255, 255, 255), 1);
+            imshow("Options", options);
+            
             int key = waitKey(0);
             
             if (key == 'n' || key == 'N') {
@@ -193,18 +236,51 @@ void CubeScanner::scanCube(RubiksCubeBitboard& cube) {
                             static_cast<RubiksCube::Face>(face),
                             i, j, grid[i][j]);
                 destroyWindow("Scanned Face");
+                destroyWindow("Options");
                 break;
             }
-            else if (key == 'r' || key == 'R') {
-                cout << "[Scanner] Rescanning face " << faceNames[face] << "...\n";
+            else if (key == 'q' || key == 'Q') {
+                cout << "Scanning cancelled by user." << endl;
+                destroyAllWindows();
+                cap.release();  
+                exit(0);
             }
-            else {
-                cout << "[Scanner] Invalid key. Press [R] to rescan or [N] for next.\n";
+            
+            else if (key == 'r' || key == 'R') {
+               destroyWindow("Scanned Face");
+                continue;
+            }
+             else {
+                cout << "Invalid key! Press [R] to rescan, [N] for next face, or [Q] to quit." << endl;
             }
         }
     }
 
-    cap.release();
     destroyAllWindows();
-    cout << "[Scanner] All 6 faces scanned.\n";
+    cap.release();
+
+    // Validate — check each color appears exactly 9 times
+    map<RubiksCube::Color, int> colorCount;
+    for (int face = 0; face < 6; face++)
+        for (int i = 0; i < 3; ++i)
+            for (int j = 0; j < 3; ++j)
+                colorCount[cubeGrid[face][i][j]]++;
+
+    bool valid = true;
+    for (auto& [color, count] : colorCount) {
+        if (count != 9) {
+            valid = false;
+            break;
+        } 
+    }
+
+    if (!valid) {
+        cout << "\n Invalid cube scan! Color counts:" << endl;
+        string colorNames[] = {"WHITE","YELLOW","RED","ORANGE","GREEN","BLUE"};
+        for (auto& [color, count] : colorCount)
+            cout << colorNames[(int)color] << ": " << count << endl;
+        cout << "Please re-run and scan again carefully." << endl;
+    } else {
+        cout << "\n Cube scanned successfully!" << endl;
+    }
 }
