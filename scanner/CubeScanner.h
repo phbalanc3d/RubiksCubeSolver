@@ -20,7 +20,7 @@ public:
     ~CubeScanner();
 
     // uses RubiksCubeBitboard specifically since it's your concrete type
-    void scanCube(RubiksCubeBitboard& cube);
+    bool scanCube(RubiksCubeBitboard& cube);
 
 private:
 

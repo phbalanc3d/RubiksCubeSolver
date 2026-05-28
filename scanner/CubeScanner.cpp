@@ -188,7 +188,7 @@ Mat CubeScanner::drawFullCube(const vector<vector<vector<RubiksCube::Color>>>& c
     return canvas;
 }
 
-void CubeScanner::scanCube(RubiksCubeBitboard& cube) {
+bool CubeScanner::scanCube(RubiksCubeBitboard& cube) {
     vector<vector<vector<RubiksCube::Color>>> cubeGrid(
         6, vector<vector<RubiksCube::Color>>(
             3, vector<RubiksCube::Color>(3, RubiksCube::Color::WHITE)));
@@ -226,7 +226,7 @@ void CubeScanner::scanCube(RubiksCubeBitboard& cube) {
                 Point(10, 35), FONT_HERSHEY_SIMPLEX,
                 0.6, Scalar(255, 255, 255), 1);
             imshow("Options", options);
-            
+
             int key = waitKey(0);
             
             if (key == 'n' || key == 'N') {

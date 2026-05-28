@@ -38,7 +38,11 @@ RubiksCubeBitboard cube;
 
     try {
         CubeScanner scanner(0, 60);
-        scanner.scanCube(cube);
+        bool success = scanner.scanCube(cube);  // ← now returns bool
+        if (!success) {
+            cerr << "[Scanner] Failed to scan the cube." << "\n";
+            return -1;
+        }
     } catch (exception& e) {
         cerr << "[Scanner] Error: " << e.what() << "\n";
         return -1;
