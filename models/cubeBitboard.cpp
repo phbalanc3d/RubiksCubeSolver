@@ -73,12 +73,17 @@ using Move  = RubiksCube::Move;
                 bitboard[side] |= clr << (8 * faceIdx);
             }
             solved_side_config[side] = bitboard[side];
+            centerColors[side] = (Color)side; 
         }
     }
 
     void RubiksCubeBitboard::setColor(Face face, int row, int col, Color color){
         int idx = arr[row][col];
-        if (idx == 8) return;
+        if (idx == 8) {
+        centerColors[(int)face] = color;   // FIX: store instead of return
+        return;
+    }
+
 
         bitboard[(int)face] &= ~(one_8 << (8 * idx));
 
@@ -88,8 +93,8 @@ using Move  = RubiksCube::Move;
 
     Color RubiksCubeBitboard::getColor(Face face, unsigned row, unsigned col)const{
         int idx = arr[row][col];
-        if (idx == 8) return (Color)((int) face);
-
+        if (idx == 8) return centerColors[(int)face];
+        
         uint64_t side = bitboard[(int) face];
         uint64_t color = (side >> (8 * idx)) & one_8;
 
@@ -315,6 +320,8 @@ RubiksCubeBitboard::operator=(const RubiksCubeBitboard &r1) {
     for (int i = 0; i < 6; i++) {
 
         bitboard[i] = r1.bitboard[i];
+        solved_side_config[i] = r1.solved_side_config[i];  // ADD
+        centerColors[i] = r1.centerColors[i]; 
     }
 
     return *this;
@@ -386,17 +393,6 @@ RubiksCubeBitboard::operator=(const RubiksCubeBitboard &r1) {
 
         ret |= get5bitCorner(bottom_back_left);
         ret = ret << 5;
-
-//        Following was used for Testing / Printing
-
-//        cout << top_front_right << " "; print5bitbin(get5bitCorner(top_front_right )); cout  << "\n";
-//        cout << top_front_left << " "; print5bitbin(get5bitCorner(top_front_left )); cout << "\n";
-//        cout << top_back_right << " "; print5bitbin(get5bitCorner(top_back_right )); cout << "\n";
-//        cout << top_back_left  << " "; print5bitbin(get5bitCorner(top_back_left  )); cout << "\n";
-//        cout << bottom_front_right  << " "; print5bitbin(get5bitCorner(bottom_front_right  )); cout << "\n";
-//        cout << bottom_front_left << " "; print5bitbin(get5bitCorner(bottom_front_left )); cout << "\n";
-//        cout << bottom_back_right << " "; print5bitbin(get5bitCorner(bottom_back_right )); cout << "\n";
-//        cout << bottom_back_left << " "; print5bitbin(get5bitCorner(bottom_back_left )); cout << "\n";
 
         return ret;
     }

@@ -29,47 +29,72 @@ CubeScanner::~CubeScanner() {
     destroyAllWindows();
 }
 
-RubiksCube::Color CubeScanner::classifyColor(const Vec3b& bgr) {
+/*RubiksCube::Color CubeScanner::classifyColor(const Vec3b& bgr) {
     Mat bgrPixel(1, 1, CV_8UC3, bgr);
     Mat hsvPixel;
     cvtColor(bgrPixel, hsvPixel, COLOR_BGR2HSV);
     Vec3b hsv = hsvPixel.at<Vec3b>(0, 0);
+    int h = hsv[0], s = hsv[1], v = hsv[2];
 
-    int h = hsv[0];   // 0-180 in OpenCV
-    int s = hsv[1];   // 0-255
-    int v = hsv[2];   // 0-255
-
-    // WHITE — high brightness, low saturation
-    if (v > 180 && s < 60)
+    // WHITE — low saturation
+    if (s < 50)
         return RubiksCube::Color::WHITE;
 
-    // low saturation non-white = probably white under bad lighting
-    if (s < 40)
-        return RubiksCube::Color::WHITE;
+    // RED — high hue end (173-174 on your camera)
+    if (h <= 8 || h >= 160)
+    return RubiksCube::Color::RED;
 
-    // YELLOW — wider range for low quality cams
-    if (h >= 20 && h <= 35)
-        return RubiksCube::Color::YELLOW;
+if (h >= 9 && h <= 22)
+    return RubiksCube::Color::ORANGE;
 
-    // ORANGE
-    if (h >= 8 && h <= 19)
-        return RubiksCube::Color::ORANGE;
-
-    // RED — wraps around 0 and 180
-    if (h <= 7 || h >= 165)
-        return RubiksCube::Color::RED;
+if (h >= 23 && h <= 45)
+    return RubiksCube::Color::YELLOW;
 
     // GREEN
     if (h >= 55 && h <= 95)
         return RubiksCube::Color::GREEN;
 
     // BLUE
-    if (h >= 96 && h <= 130)
+    if (h >= 96 && h <= 135)
         return RubiksCube::Color::BLUE;
 
-    // fallback — guess based on hue
+    return RubiksCube::Color::WHITE;
+}*/
+
+RubiksCube::Color CubeScanner::classifyColor(const Vec3b& bgr) {
+    Mat bgrPixel(1, 1, CV_8UC3, bgr);
+    Mat hsvPixel;
+    cvtColor(bgrPixel, hsvPixel, COLOR_BGR2HSV);
+    Vec3b hsv = hsvPixel.at<Vec3b>(0, 0);
+    int h = hsv[0], s = hsv[1], v = hsv[2];
+
+    // WHITE — low saturation + bright
+    if (s < 50 && v > 150)
+        return RubiksCube::Color::WHITE;
+
+    // RED — h=0-8 and h=160-180
+    if (h <= 8 || h >= 160)
+        return RubiksCube::Color::RED;
+
+    // ORANGE — h=9-22
+    if (h >= 9 && h <= 22)
+        return RubiksCube::Color::ORANGE;
+
+    // YELLOW — h=23-45
+    if (h >= 23 && h <= 45)
+        return RubiksCube::Color::YELLOW;
+
+    // GREEN — h=46-95 (FIX: was 55, now 46 — closes gap)
+    if (h >= 46 && h <= 95)
+        return RubiksCube::Color::GREEN;
+
+    // BLUE — h=96-159 (FIX: was 135, now 159 — closes gap)
+    if (h >= 96 && h <= 159)
+        return RubiksCube::Color::BLUE;
+
     return RubiksCube::Color::WHITE;
 }
+
 
 Vec3b CubeScanner::medianColor(const Mat& frame, int centerX, int centerY, int region) {
     int half = region / 2;
@@ -93,10 +118,21 @@ Vec3b CubeScanner::medianColor(const Mat& frame, int centerX, int centerY, int r
 
 vector<vector<RubiksCube::Color>> CubeScanner::captureFace() {
     Mat frame;
-    int rows, cols;
+    int rows = 480, cols = 640;  // safe defaults
+    Mat capturedFrame;    // to hold the frame at the moment of capture for later display
+
+     for (int i = 0; i < 5; i++) {
+        cap >> frame;
+        if (!frame.empty()) {
+            rows = frame.rows;
+            cols = frame.cols;
+        }
+    }
 
     while (true) {
         cap >> frame;
+        if (frame.empty()) continue;   // ADD — skip empty frames
+
         rows = frame.rows;
         cols = frame.cols;
         int startX = (cols - 3 * boxSize) / 2;
@@ -114,6 +150,7 @@ vector<vector<RubiksCube::Color>> CubeScanner::captureFace() {
         }
 // Check if cube-like colors detected in grid
         int coloredCells = 0;
+
         for (int i = 0; i < 3; ++i) {
             for (int j = 0; j < 3; ++j) {
                 int x = startX + j * boxSize + boxSize / 2;
@@ -135,7 +172,10 @@ vector<vector<RubiksCube::Color>> CubeScanner::captureFace() {
 
         int key = waitKey(30);
 
-        if (key == 32) break;      // SPACE to capture
+        if (key == 32){ 
+            capturedFrame = frame.clone();
+            break;      // SPACE to capture
+        } 
         if (key == 'q' || key == 'Q') {
             destroyAllWindows();
             cap.release();
@@ -143,18 +183,20 @@ vector<vector<RubiksCube::Color>> CubeScanner::captureFace() {
         }
     }
 
-    cap >> frame;
+    //cap >> frame;
     int startX = (cols - 3 * boxSize) / 2;
     int startY = (rows - 3 * boxSize) / 2;
 
     vector<vector<RubiksCube::Color>> face(3, vector<RubiksCube::Color>(3));
-    for (int i = 0; i < 3; ++i)
+    for (int i = 0; i < 3; ++i){
         for (int j = 0; j < 3; ++j) {
             int x = startX + j * boxSize + boxSize / 2;
             int y = startY + i * boxSize + boxSize / 2;
-            Vec3b bgr = medianColor(frame, x, y);
+
+            Vec3b bgr = medianColor(capturedFrame, x, y);
             face[i][j] = classifyColor(bgr);
         }
+    }
     return face;
 }
 

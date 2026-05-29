@@ -36,8 +36,9 @@ private:
         const Mat& frame,
         int centerX,
         int centerY,
-        int region = 5
+        int region = 3
     );
+    RubiksCube::Color centerColors[6];   // ADD this to private section
 
     vector<vector<RubiksCube::Color>> captureFace();
 

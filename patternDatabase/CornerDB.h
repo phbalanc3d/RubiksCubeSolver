@@ -16,6 +16,8 @@
 #include <numeric>
 
 using namespace std;
+
+uint8_t UNVISITED = 0xF;
 template<typename T>
 class CornerDB {
 private:
@@ -59,16 +61,38 @@ CornerDB<T>::CornerDB(string _fileName,uint8_t init_val)
 template<typename T>
 bool CornerDB<T>::bfsAndStore(uint8_t maxDepth) {
     // default constructor for solved cube
-    T cube;
+    /*T cube;
     queue<T> q;
     q.push(cube);
     cout << "[CornerDB]BFS started" << endl;
     // solved state index
     uint32_t index = cornerDB.getDatabaseIndex(cube);
     // depth of solved state intialy is 0
-    cornerDB.setNumMoves(index, 0);
+    cornerDB.setNumMoves(index, 0);*/
+    T cube;
+queue<T> q;
+q.push(cube);
+
+cout << "[CornerDB]BFS started" << endl;
+
+cout << "A" << endl;
+uint32_t index = cornerDB.getDatabaseIndex(cube);
+
+cout << "Solved index = " << index << endl;
+
+cout << "B" << endl;
+cornerDB.setNumMoves(index, 0);
+
+cout << "C" << endl;
+    long long cnt = 0;
 
 while(!q.empty()) {
+    cnt++;
+
+    if(cnt % 100000 == 0){
+        cout << "Visited: " << cnt << endl;
+    }
+    
         T curr = q.front();
         q.pop();
         uint8_t currDepth = cornerDB.getNumMoves(cornerDB.getDatabaseIndex(curr));
@@ -82,7 +106,7 @@ for(int move = 0;move < 18;move++) {
             uint32_t childIndex =cornerDB.getDatabaseIndex(child);
 //if unvisited then
 
- if(cornerDB.getNumMoves(childIndex)== 255) {
+ if(cornerDB.getNumMoves(childIndex)== UNVISITED) {
                 cornerDB.setNumMoves(childIndex,currDepth + 1);
                 q.push(child);
             }
@@ -90,7 +114,7 @@ for(int move = 0;move < 18;move++) {
     }
 
     for(uint32_t i = 0;i < cornerDB.getSize();i++) {
-        if(cornerDB.getNumMoves(i)== 255) {
+        if(cornerDB.getNumMoves(i)== UNVISITED) {
             cornerDB.setNumMoves(i,maxDepth + 1);
         }
     }

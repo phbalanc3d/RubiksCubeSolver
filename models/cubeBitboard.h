@@ -4,6 +4,7 @@
 class RubiksCubeBitboard : public RubiksCube {
 private:
     uint64_t solved_side_config[6]{};
+    Color centerColors[6]; 
 
     int arr[3][3] = {{0, 1, 2},
                      {7, 8, 3},
