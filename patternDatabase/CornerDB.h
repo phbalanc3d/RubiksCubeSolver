@@ -69,56 +69,35 @@ bool CornerDB<T>::bfsAndStore(uint8_t maxDepth) {
     uint32_t index = cornerDB.getDatabaseIndex(cube);
     // depth of solved state intialy is 0
     cornerDB.setNumMoves(index, 0);*/
-    T cube;
+T cube;
 queue<T> q;
 q.push(cube);
 
 cout << "[CornerDB]BFS started" << endl;
-
-cout << "A" << endl;
 uint32_t index = cornerDB.getDatabaseIndex(cube);
 
-cout << "Solved index = " << index << endl;
-
-cout << "B" << endl;
 cornerDB.setNumMoves(index, 0);
-
-cout << "C" << endl;
-    long long cnt = 0;
 
 while(!q.empty()) {
 
-    cout << "Loop start" << endl;
-
     T curr = q.front();
     q.pop();
-
-    cout << "Got cube" << endl;
 
     uint8_t currDepth =
         cornerDB.getNumMoves(
             cornerDB.getDatabaseIndex(curr)
         );
 
-    cout << "Depth = " << (int)currDepth << endl;
-
     if(currDepth == maxDepth)
         continue;
 
     for(int move = 0; move < 18; move++) {
 
-        cout << "Move " << move << endl;
-
         T child = curr;
 
         child.applyMove(RubiksCube::Move(move));
-
-        cout << "Applied move" << endl;
-
         uint32_t childIndex =
             cornerDB.getDatabaseIndex(child);
-
-        cout << "Index = " << childIndex << endl;
 
         if(cornerDB.getNumMoves(childIndex) == UNVISITED) {
             cornerDB.setNumMoves(childIndex, currDepth + 1);
@@ -133,8 +112,10 @@ while(!q.empty()) {
         }
     }
 
-    cout << "[CornerDB]Saving DB..." << endl;
+cout << "[CornerDB]Saving DB..." << endl;
+
 cornerDB.toFile(fileName);
+
 cout << "[CornerDB]DB saved!" << endl;
 return true;
 }
