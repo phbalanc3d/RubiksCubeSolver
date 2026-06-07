@@ -87,31 +87,45 @@ cout << "C" << endl;
     long long cnt = 0;
 
 while(!q.empty()) {
-    cnt++;
 
-    if(cnt % 100000 == 0){
-        cout << "Visited: " << cnt << endl;
-    }
-    
-        T curr = q.front();
-        q.pop();
-        uint8_t currDepth = cornerDB.getNumMoves(cornerDB.getDatabaseIndex(curr));
-        // stop deeper expansion cuz its childern wil have depth more than maxDepth
-        if(currDepth == maxDepth) continue;
+    cout << "Loop start" << endl;
 
-for(int move = 0;move < 18;move++) {
-            T child = curr;
-// this creates the child like all the neighbours of the current cube after applying one move
-            child.applyMove(RubiksCube::Move(move));
-            uint32_t childIndex =cornerDB.getDatabaseIndex(child);
-//if unvisited then
+    T curr = q.front();
+    q.pop();
 
- if(cornerDB.getNumMoves(childIndex)== UNVISITED) {
-                cornerDB.setNumMoves(childIndex,currDepth + 1);
-                q.push(child);
-            }
+    cout << "Got cube" << endl;
+
+    uint8_t currDepth =
+        cornerDB.getNumMoves(
+            cornerDB.getDatabaseIndex(curr)
+        );
+
+    cout << "Depth = " << (int)currDepth << endl;
+
+    if(currDepth == maxDepth)
+        continue;
+
+    for(int move = 0; move < 18; move++) {
+
+        cout << "Move " << move << endl;
+
+        T child = curr;
+
+        child.applyMove(RubiksCube::Move(move));
+
+        cout << "Applied move" << endl;
+
+        uint32_t childIndex =
+            cornerDB.getDatabaseIndex(child);
+
+        cout << "Index = " << childIndex << endl;
+
+        if(cornerDB.getNumMoves(childIndex) == UNVISITED) {
+            cornerDB.setNumMoves(childIndex, currDepth + 1);
+            q.push(child);
         }
     }
+}
 
     for(uint32_t i = 0;i < cornerDB.getSize();i++) {
         if(cornerDB.getNumMoves(i)== UNVISITED) {
